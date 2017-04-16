@@ -40,6 +40,7 @@ function LowInventory(){
  					unit =new x.Items(results[i].id,results[i].product_name,results[i].department,results[i].price,results[i].stock_quantity);
  					 	console.log(" ")
 						unit.printInfo();
+					
 			}
 	})
 }
@@ -139,4 +140,6 @@ function Start(){
 
 }
 
-Start();
+//Start();
+
+module.exports = Start;

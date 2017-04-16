@@ -1,4 +1,5 @@
 var x = require("./object.js");
+var app = require("./bamazonManger.js");
 var database = require("mysql");
 var inquirer = require("inquirer");
 var id;
@@ -54,6 +55,8 @@ inquirer.prompt([
 								connection.query("SELECT * from products;", function (error, results, fields) {
                        		 		if (error) throw error;
                         			unit =new x.Items(results[0].id,results[0].product_name,results[0].department,results[0].price,results[0].stock_quantity);
+                        			diff = results[0].stock_quantity-quant;
+                        			console.log(quant)
 										console.log(" ")
 										console.log("Your entry has been submitted")
 										unit.printInfo();
@@ -86,10 +89,15 @@ BidItem = function(){
 function query(){
 	console.log(quant)
 						connection.query("SELECT * FROM products  WHERE id='"+ number +"';", function (error, results, fields) {
+							
 							console.log(" ");
 							console.log("You have selected the " + results[0].product_name)
+							diff = results[0].stock_quantity- quant;
+							console.log(diff)
 		
  							 unit =new x.Items(results[0].id,results[0].product_name,results[0].department,results[0].price,quant);
+ 							 diff = results[0].stock_quantity-quant;
+                        		
 								if(quant>results[0].stock_quantity){
  								inquirer.prompt ({
 			 									type:"input",
@@ -130,13 +138,15 @@ function query(){
 
 
 function Pay(){
+	console.log()
+	//diff = unit.quantity;
+
 	var cost= quant * price;
 	console.log(" ");
 	console.log("Your total is $ " + cost) 
 	payQuery();
 
 function payQuery(){
-	diff= unit.quantity-quant;
     var index = number-1; 
 		connection.query("UPDATE products SET stock_quantity='"+ diff +"' WHERE id ='"+ number +"';" , function(error, results, fields){
 				if (error) throw error;
@@ -254,4 +264,26 @@ function end(){
 
 
 
-Start();
+
+function Begin(){
+	inquirer.prompt ({
+						type:"list",
+						name:"options",
+						message:"Choose from the following",
+						choices:["Customer","Manager"]
+						}).then(function(res){
+						    if(res.options==="Customer"){
+							  Start();	
+							}
+						    else{
+								app();
+							}
+						})
+
+}
+
+
+
+
+
+Begin();
